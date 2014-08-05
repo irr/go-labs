@@ -1,0 +1,13 @@
+cs_memcached:
+  listen: 127.0.0.1:16379
+  hash: fnv1a_64
+  distribution: ketama
+  timeout: 1000
+  backlog: 1024
+  preconnect: true
+  auto_eject_hosts: true
+  server_retry_timeout: 2000
+  server_failure_limit: 3
+  redis: true
+  servers:
+   - 127.0.0.1:6379:1

@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# /etc/init.d/nutcrackerd
+# Subsystem file for rsync server
+#
+# chkconfig: 2345 95 05
+# description: Daemon for nutcracker
+#
+# processname: nutcracker
+# config: /opt/nosql/nutcracker/config.yml
+# pidfile: /var/run/nutcracker.pid
+
+
+
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+RETVAL=0
+prog=nutcracker
+
+[ -f /usr/local/sbin/nutcracker ] || exit 0
+
+case "$1" in
+start)
+action "Starting nutcracker: " /usr/local/sbin/nutcracker -p /var/run/nutcracker.pid -c /opt/nosql/nutcracker/config.yml -d 
+RETVAL=$?
+;;
+stop)
+action "Stopping nutcracker: " killall nutcracker
+;;
+status)
+status $prog
+RETVAL=$?
+;;
+*)
+echo "Usage: nutcracker {start|stop|status}"
+exit 1
+esac
+exit 0
+
