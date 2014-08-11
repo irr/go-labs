@@ -42,6 +42,9 @@ func main() {
 	sub := regexp.MustCompile("(?i)<.*?i>|(?i)<.*?b>|(?i)<.*?u>").ReplaceAllString(text, "")
 
 	if err := ioutil.WriteFile(os.Args[1], []byte(sub), 0644); err != nil {
+		fmt.Printf("[%s] error=[%s].\n", os.Args[1], err)
 		os.Exit(1)
 	}
+
+	fmt.Printf("[%s] ok.\n", os.Args[1])
 }
