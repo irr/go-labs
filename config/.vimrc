@@ -42,5 +42,3 @@ cmap <S-Insert> <C-R>+
 
 map <F2> :Fmt <CR>
 map <F8> :set fileencoding=utf-8<CR>:set fileformat=unix<CR>:w<CR>
-
-:colorscheme darknight256
