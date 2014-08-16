@@ -1,4 +1,4 @@
-set guifont=Ubuntu\ Mono\ 14
+set guifont=Droid\ Sans\ Mono\ 12
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
@@ -7,7 +7,6 @@ set nobackup
 set nowritebackup
 set noswapfile
 set fileformat=unix
-set number
 set paste
 set pastetoggle=<F5>
 set expandtab
