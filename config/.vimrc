@@ -43,6 +43,8 @@ cmap <S-Insert> <C-R>+
 map <F2> :Fmt <CR>
 map <F8> :set fileencoding=utf-8<CR>:set fileformat=unix<CR>:w<CR>
 
-if has('gui_running')
-   colorscheme darknight256
+if $COLORTERM == 'gnome-terminal'
+  set t_Co=256
 endif
+
+colorscheme hemisu
