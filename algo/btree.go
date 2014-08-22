@@ -18,8 +18,6 @@ type Tree struct {
 func newNode(data *string) *Node {
 	node := new(Node)
 	node.Data = data
-	node.Left = nil
-	node.Right = nil
 	return node
 }
 

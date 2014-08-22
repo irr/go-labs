@@ -41,7 +41,6 @@ func (b *BinHeap) minChild(i int) int {
 
 func NewBinHeap() *BinHeap {
 	b := new(BinHeap)
-	b.size = 0
 	b.list = []int{0}
 	return b
 }
@@ -106,7 +105,7 @@ func main() {
 
 	bh := BuildHeap([]int{33, 17, 27, 18, 14, 9, 19, 21, 11, 5, 7})
 	fmt.Printf("%#v\n", bh)
-	for i := 0; i < 11; i++ {
+	for i := 0; i < 12; i++ {
 		v, ok := bh.delmin()
 		fmt.Printf("%#v[%v]\n", v, ok)
 		fmt.Printf("%#v\n", bh)
