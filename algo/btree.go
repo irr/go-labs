@@ -23,6 +23,47 @@ func newNode(data *string) *Node {
 	return node
 }
 
+func (t *Tree) minValue(node *Node) *Node {
+	p := node
+	for p.Left != nil {
+		p = p.Left
+	}
+	return p
+}
+
+func (t *Tree) Remove(data string) bool {
+	return (t.remove(t.Root, &data) != nil)
+}
+
+func (t *Tree) remove(node *Node, data *string) *Node {
+	if node == nil {
+		return nil
+	}
+	if *data < *node.Data {
+		node.Left = t.remove(node.Left, data)
+	} else if *data > *node.Data {
+		node.Right = t.remove(node.Right, data)
+	} else {
+		if node.Left == nil {
+			if node == t.Root {
+				t.Root = node.Right
+			}
+			t.N--
+			return node.Right
+		} else if node.Right == nil {
+			if node == t.Root {
+				t.Root = node.Left
+			}
+			t.N--
+			return node.Left
+		}
+		p := t.minValue(node.Right)
+		node.Data = p.Data
+		node.Right = t.remove(node.Right, p.Data)
+	}
+	return node
+}
+
 func (t *Tree) Search(data string) *Node {
 	return t.lookup(t.Root, &data)
 }
@@ -95,4 +136,7 @@ func main() {
 	tree.Dump()
 	node := tree.Search("luma")
 	fmt.Printf("Search: luma\n\t%#v[%v]\n", node, *node.Data)
+	key := "luma"
+	fmt.Printf("Remove: %s\n\t%#v\n", key, tree.Remove(key))
+	tree.Dump()
 }
