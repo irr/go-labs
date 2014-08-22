@@ -1,15 +1,24 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
 func main() {
 	client := &http.Client{}
-	data := strings.NewReader("{\"test\": \"that\"}")
+	v := url.Values{}
+	v.Add("test", "One")
+	v.Add("test", "Two")
+	b, err := json.Marshal(v)
+	if err != nil {
+		log.Fatal(err)
+	}
+	data := strings.NewReader(string(b))
 	req, err := http.NewRequest("POST", "http://localhost:8082/test", data)
 	if err != nil {
 		log.Fatal(err)
