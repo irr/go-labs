@@ -48,6 +48,21 @@ func (l *List) Push(d *string) *Node {
 	return node
 }
 
+func (l *List) Unshift(d *string) *Node {
+	node := new(Node)
+	node.Data = d
+	if l.First == nil {
+		l.First = node
+		l.Last = node
+		l.N++
+	} else {
+		l.First.Prev = node
+		node.Next = l.First
+		l.First = node
+	}
+	return node
+}
+
 func (l *List) Remove(node *Node) *string {
 	if node == nil {
 		return nil
