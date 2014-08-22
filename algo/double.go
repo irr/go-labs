@@ -41,6 +41,21 @@ func (l *List) Push(d *Content) *Node {
 	return node
 }
 
+func (l *List) Unshift(d *Content) *Node {
+	node := new(Node)
+	node.Data = d
+	if l.First == nil {
+		l.First = node
+		l.Last = node
+		l.N++
+	} else {
+		l.First.Prev = node
+		node.Next = l.First
+		l.First = node
+	}
+	return node
+}
+
 func (l *List) Remove(node *Node) *Content {
 	if node == nil {
 		return nil
@@ -113,5 +128,9 @@ func main() {
 	fmt.Printf("Shift: %#v\n", d.Shift())
 	d.Dump()
 	fmt.Printf("Remove: %#v\n", d.Remove(m))
+	d.Dump()
+	c := new(Content)
+	c.Id = strconv.Itoa(max + 1)
+	fmt.Printf("Unshift: %#v\n", d.Unshift(c))
 	d.Dump()
 }
