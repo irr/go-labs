@@ -32,12 +32,12 @@ func (l *List) Push(d *Content) *Node {
 	if l.Last == nil {
 		l.First = node
 		l.Last = node
-		l.N++
 	} else {
 		l.Last.Next = node
 		node.Prev = l.Last
 		l.Last = node
 	}
+	l.N++
 	return node
 }
 
