@@ -1,4 +1,4 @@
-set guifont=Courier\ 10\ Pitch\ 12
+set guifont=monofur\ 14
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
