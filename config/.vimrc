@@ -1,4 +1,5 @@
-set guifont=Ubuntu\ Mono\ 12
+set guifont=monofur\ Bold\ 12
+set lines=35 columns=120
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
@@ -12,7 +13,6 @@ set pastetoggle=<F5>
 set expandtab
 retab
 set guioptions-=T
-set guioptions-=m
 set laststatus=2
 set statusline=%02n:%t[%{strlen(&fenc)?&fenc:'none'},%{&ff}]%h%m%r%y%=%c,%l/%L\ %P
 set showtabline=0
@@ -46,4 +46,6 @@ map <F8> :set fileencoding=utf-8<CR>:set fileformat=unix<CR>:w<CR>
 if $COLORTERM == 'gnome-terminal'
   set t_Co=256
 endif
+
+colorscheme calmar256-dark
 
