@@ -1,5 +1,5 @@
-set guifont=monofur\ Bold\ 12
-set lines=35 columns=120
+set guifont=Courier\ 10\ Pitch\ Bold\ 11
+set lines=35 columns=135
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
