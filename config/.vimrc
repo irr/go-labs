@@ -1,5 +1,5 @@
-set guifont=Courier\ 10\ Pitch\ 11
-set lines=35 columns=135
+set guifont=Ubuntu\ Mono\ 13
+set lines=32 columns=130
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
@@ -10,12 +10,12 @@ set noswapfile
 set fileformat=unix
 set paste
 set pastetoggle=<F5>
-set expandtab
-retab
 set guioptions-=T
 set laststatus=2
 set statusline=%02n:%t[%{strlen(&fenc)?&fenc:'none'},%{&ff}]%h%m%r%y%=%c,%l/%L\ %P
 set showtabline=0
+set expandtab
+retab
 
 filetype off
 filetype plugin indent off
@@ -41,11 +41,9 @@ cmap <C-V> <C-R>+
 cmap <S-Insert> <C-R>+
 
 map <F2> :Fmt <CR>
-map <F8> :set fileencoding=utf-8<CR>:set fileformat=unix<CR>:w<CR>
+map <F8> :set fileencoding=utf-8<CR>:set fileformat=unix<CR>
 
-if $COLORTERM == 'gnome-terminal'
-  set t_Co=256
-endif
+set t_Co=256
 
 colorscheme calmar256-dark
 
