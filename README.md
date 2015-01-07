@@ -18,6 +18,7 @@ Libraries
 * [go-nsq]: Go package for NSQ
 * [go-simplejson]: a Go package to interact with arbitrary JSON
 * [go-options]: a Go package to structure and resolve options
+* [gohadoop]: native go clients for Apache Hadoop YARN.
 
 ```shell
 go get -v code.google.com/p/go-tour/gotour
@@ -32,6 +33,7 @@ go get -v github.com/cryptobox/gocryptobox/box
 go get -v github.com/bitly/go-nsq
 go get -v github.com/bitly/go-simplejson
 go get -v github.com/mreiferson/go-options
+go get -v github.com/hortonworks/gohadoop
 ```
 
 Copyright and License
@@ -63,3 +65,4 @@ limitations under the License.
 [go-nsq]: https://github.com/bitly/go-nsq
 [go-simplejson]: https://github.com/bitly/go-simplejson
 [go-options]: https://github.com/mreiferson/go-options
+[gohadoop]: https://github.com/hortonworks/gohadoop
