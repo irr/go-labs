@@ -15,6 +15,9 @@ Libraries
 * [leveldb-go]: The LevelDB key/value database in Go
 * [redigo]: Go client for Redis
 * [Go-MySQL-Driver]: A MySQL-Driver for Go
+* [go-nsq]: Go package for NSQ
+* [go-simplejson]: a Go package to interact with arbitrary JSON
+* [go-options]: a Go package to structure and resolve options
 
 ```shell
 go get -v code.google.com/p/go-tour/gotour
@@ -26,13 +29,9 @@ go get -v github.com/go-sql-driver/mysql
 go get -v github.com/sloonz/go-iconv
 go get -v github.com/tux21b/gocql
 go get -v github.com/cryptobox/gocryptobox/box
-```
-
-```shell
-go get -v github.com/BurntSushi/toml
+go get -v github.com/bitly/go-nsq
 go get -v github.com/bitly/go-simplejson
 go get -v github.com/mreiferson/go-options
-go get -v github.com/bitly/go-nsq
 ```
 
 Copyright and License
@@ -62,3 +61,5 @@ limitations under the License.
 [cryptobox]: https://github.com/cryptobox/gocryptobox
 [leveldb-go]: http://code.google.com/p/leveldb-go
 [go-nsq]: https://github.com/bitly/go-nsq
+[go-simplejson]: https://github.com/bitly/go-simplejson
+[go-options]: https://github.com/mreiferson/go-options
