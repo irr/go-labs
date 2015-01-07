@@ -18,7 +18,7 @@ Libraries
 * [go-nsq]: Go package for NSQ
 * [go-simplejson]: a Go package to interact with arbitrary JSON
 * [go-options]: a Go package to structure and resolve options
-* [gohadoop]: native go clients for Apache Hadoop YARN.
+* [gohadoop]: native go clients for Apache Hadoop YARN
 
 ```shell
 go get -v code.google.com/p/go-tour/gotour
