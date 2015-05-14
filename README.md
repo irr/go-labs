@@ -18,6 +18,7 @@ Libraries
 * [go-nsq]: Go package for NSQ
 * [go-simplejson]: a Go package to interact with arbitrary JSON
 * [go-options]: a Go package to structure and resolve options
+* [pq]: Pure Go Postgres driver for database/sql
 * [gohadoop]: native go clients for Apache Hadoop YARN
 
 ```shell
@@ -33,6 +34,7 @@ go get -v github.com/cryptobox/gocryptobox/box
 go get -v github.com/bitly/go-nsq
 go get -v github.com/bitly/go-simplejson
 go get -v github.com/mreiferson/go-options
+go get -v github.com/lib/pq
 go get -v github.com/hortonworks/gohadoop
 ```
 
@@ -65,4 +67,5 @@ limitations under the License.
 [go-nsq]: https://github.com/bitly/go-nsq
 [go-simplejson]: https://github.com/bitly/go-simplejson
 [go-options]: https://github.com/mreiferson/go-options
+[pq]: https://github.com/lib/pq
 [gohadoop]: https://github.com/hortonworks/gohadoop
