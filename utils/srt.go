@@ -59,5 +59,5 @@ func main() {
 		showError(e)
 	}
 
-	showInfo(fmt.Sprintf("[%s] ok.\n", os.Args[1]))
+	showInfo(fmt.Sprintf("[%s](%s) ok.\n", os.Args[1], charset))
 }

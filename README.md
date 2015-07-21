@@ -6,35 +6,26 @@ go-labs
 Libraries
 -----------
 
+* [cryptobox]: Go port of Cryptobox
 * [gocql]: A database/sql driver for CQL, the Cassandra query language for Go
 * [godec]: multi-precision decimal arithmetic for Go
+* [gohadoop]: native go clients for Apache Hadoop YARN
 * [go-iconv]: iconv binding for Go
-* [go-etcd]: Go client library for etcd
-* [go-nsq]: the official Go package for NSQ
-* [cryptobox]: Go port of Cryptobox
-* [leveldb-go]: The LevelDB key/value database in Go
-* [redigo]: Go client for Redis
-* [Go-MySQL-Driver]: A MySQL-Driver for Go
-* [go-nsq]: Go package for NSQ
 * [go-simplejson]: a Go package to interact with arbitrary JSON
 * [go-options]: a Go package to structure and resolve options
-* [pq]: Pure Go Postgres driver for database/sql
-* [gohadoop]: native go clients for Apache Hadoop YARN
+* [Go-MySQL-Driver]: A MySQL-Driver for Go
+* [redigo]: Go client for Redis
 
 ```shell
 go get -v code.google.com/p/go-tour/gotour
 go get -v code.google.com/p/godec/dec
-go get -v code.google.com/p/leveldb-go/leveldb 
-go get -v github.com/coreos/go-etcd/etcd
 go get -v github.com/garyburd/redigo/redis
 go get -v github.com/go-sql-driver/mysql
 go get -v github.com/sloonz/go-iconv
 go get -v github.com/tux21b/gocql
 go get -v github.com/cryptobox/gocryptobox/box
-go get -v github.com/bitly/go-nsq
 go get -v github.com/bitly/go-simplejson
 go get -v github.com/mreiferson/go-options
-go get -v github.com/lib/pq
 go get -v github.com/hortonworks/gohadoop
 ```
 
