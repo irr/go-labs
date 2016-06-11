@@ -15,18 +15,19 @@ Libraries
 * [go-options]: a Go package to structure and resolve options
 * [Go-MySQL-Driver]: A MySQL-Driver for Go
 * [redigo]: Go client for Redis
+* [redis]: Go client for Redis (Cluster/Sentinel)
+
 
 ```shell
-go get -v code.google.com/p/go-tour/gotour
-go get -v code.google.com/p/godec/dec
 go get -v github.com/garyburd/redigo/redis
+go get -v github.com/go-redis/redis
+# code in directory /opt/golib/src/github.com/go-redis/redis expects import "gopkg.in/redis.v3"
+go get -v github.com/gocql/gocql
 go get -v github.com/go-sql-driver/mysql
 go get -v github.com/sloonz/go-iconv
-go get -v github.com/tux21b/gocql
 go get -v github.com/cryptobox/gocryptobox/box
 go get -v github.com/bitly/go-simplejson
 go get -v github.com/mreiferson/go-options
-go get -v github.com/hortonworks/gohadoop
 ```
 
 Copyright and License
@@ -46,17 +47,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 [Go]: http://golang.org/
-[pipe]: http://labix.org/pipe
 [Go-MySQL-Driver]: https://github.com/go-sql-driver/mysql
-[gocql]: https://github.com/tux21b/gocql
-[godec]: http://code.google.com/p/godec
-[go-etcd]: https://github.com/coreos/go-etcd
+[gocql]: https://github.com/gocql/gocql
 [redigo]: https://github.com/garyburd/redigo
+[redis]: https://github.com/go-redis/redis
 [go-iconv]: https://github.com/sloonz/go-iconv
 [cryptobox]: https://github.com/cryptobox/gocryptobox
-[leveldb-go]: http://code.google.com/p/leveldb-go
-[go-nsq]: https://github.com/bitly/go-nsq
 [go-simplejson]: https://github.com/bitly/go-simplejson
 [go-options]: https://github.com/mreiferson/go-options
-[pq]: https://github.com/lib/pq
-[gohadoop]: https://github.com/hortonworks/gohadoop
