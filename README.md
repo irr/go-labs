@@ -8,8 +8,6 @@ Libraries
 
 * [cryptobox]: Go port of Cryptobox
 * [gocql]: A database/sql driver for CQL, the Cassandra query language for Go
-* [godec]: multi-precision decimal arithmetic for Go
-* [gohadoop]: native go clients for Apache Hadoop YARN
 * [go-iconv]: iconv binding for Go
 * [go-simplejson]: a Go package to interact with arbitrary JSON
 * [go-options]: a Go package to structure and resolve options
