@@ -1,33 +1,28 @@
 package main
 
 import (
-    "database/sql"
     "fmt"
-    _ "github.com/tux21b/gocql"
+    "log"
+    "github.com/gocql/gocql"
 )
 
 func main() {
-    db, err := sql.Open("gocql", "localhost:9042 keyspace=system")
-    if err != nil {
-        fmt.Println("Open error:", err)
-    }
+    cluster := gocql.NewCluster("127.0.0.1")
+    cluster.Keyspace = "system_schema"
+    cluster.Consistency = gocql.Quorum
+    cluster.ProtoVersion = 4
+    session, _ := cluster.CreateSession()
+    defer session.Close()
 
-    rows, err := db.Query("SELECT keyspace_name FROM schema_keyspaces")
-    if err != nil {
-        fmt.Println("Query error:", err)
-    }
+    iter := session.Query("SELECT keyspace_name FROM keyspaces").Iter()
 
-    for rows.Next() {
-        var keyspace string
-        err = rows.Scan(&keyspace)
-        if err != nil {
-            fmt.Println("Scan error:", err)
-        }
+    var keyspace string
+
+    for iter.Scan(&keyspace) {
         fmt.Println(keyspace)
     }
 
-    if err = rows.Err(); err != nil {
-        fmt.Println("Iteration error:", err)
-        return
+    if err := iter.Close(); err != nil {
+        log.Fatal(err)
     }
 }
