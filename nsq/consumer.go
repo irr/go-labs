@@ -2,28 +2,31 @@ package main
 
 import (
   "log"
-  "sync"
-
   "github.com/nsqio/go-nsq"
+  "sync"
+  "time"
 )
 
-func main() {
-
-  wg := &sync.WaitGroup{}
-  wg.Add(1)
-
-  config := nsq.NewConfig()
-  q, _ := nsq.NewConsumer("write_test", "ch", config)
-  q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
+func read(wg *sync.WaitGroup) {
+    config := nsq.NewConfig()
+    q, _ := nsq.NewConsumer("write_test", "ch", config)
+    q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
       log.Printf("Got: %+v => message: %v", message, string(message.Body[:]))
-      wg.Done()
       return nil
-  }))
-  //err := q.ConnectToNSQD("127.0.0.1:4150")
-  err := q.ConnectToNSQLookupd("127.0.0.1:4161")
-  if err != nil {
+    }))
+    err := q.ConnectToNSQLookupd("127.0.0.1:4161")
+    if err != nil {
+      wg.Done()
       log.Panic("Could not connect")
-  }
-  wg.Wait()
-
+    }
+    for {
+        log.Printf("Stats: (%+v)=>%+v", &q, q.Stats())
+        time.Sleep(1000 * time.Millisecond)
+    }
+}
+func main() {
+    wg := &sync.WaitGroup{}
+    wg.Add(1)
+    go read(wg)
+    wg.Wait()
 }
