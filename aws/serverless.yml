@@ -1,0 +1,24 @@
+service: lambda-time
+provider:
+  name: aws
+  runtime: go1.x
+  profile: default
+  region: eu-west-1
+  deploymentBucket: irrlab-eu
+  versionFunctions: false
+  memorySize: 1792
+  timeout: 30
+package:
+ exclude:
+   - ./**
+ include:
+   - ./bin/**
+functions:
+  lambda-time:
+    name: lambda-time
+    description: Go Lambda-time test
+    handler: bin/lambda-time
+    events:
+      - http:
+          path: /
+          method: get
