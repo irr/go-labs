@@ -1,0 +1,10 @@
+{{ define "systems" }}
+    Systems
+
+    {{ range . }}
+        <div>
+            <span> {{ .Host }} </span>
+            <span> {{ .Port }} </span>
+        </div>
+    {{ end }}
+{{ end }}

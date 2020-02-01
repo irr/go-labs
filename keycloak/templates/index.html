@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+        <style type="text/css">
+            body {
+                padding: 5px;
+                font-family: 'Roboto', sans-serif;
+            }
+            .actions {
+                display: flex;
+                flex-direction: row;
+            }
+            .actions a:not(:first-child) {
+                margin-left: 5px;
+            }
+            .grid-row {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+            }
+            .grid-row span {
+                width: 50%;
+                padding: 2px;
+                line-height: 24px;
+                height: 24px;
+            }
+
+            .flex-row span {
+                width: 100px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="actions">
+            <a href="/login">Login</a>
+            <a href="/logout">Logout</a>
+            <a href="/exchange">Exchange</a>
+            <a href="/systems">Systems</a>
+        </div>
+        <div class="session-information">
+            <div class="auth-code flex-row"><span>Auth Code: </span><span>{{ .AuthCode }}</span> </div>
+            <div class="session-code flex-row"><span>Session Code: </span><span>{{ .SessionState }}</span> </div>
+            <div class="access-token flex-row"><span>Access Token: </span><span>{{ .AccessToken }}</span> </div>
+            <div class="refresh-token flex-row"><span>Refresh Token: </span><span>{{ .RefreshToken }}</span> </div>
+            <div class="scopes flex-row"><span>Scopes: </span><span>{{ .Scope }}</span> </div>
+        </div>
+
+        <br><br>
+
+        <div class="systems">
+            {{ block "systems" .Systems }}
+                No Systems found
+            {{ end }}
+        </div>
+    </body>
+</html>
