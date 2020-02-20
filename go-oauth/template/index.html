@@ -8,7 +8,9 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title>LearningApp</title>
+    <link rel="icon" href="data:,">
+
   </head>
   <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
@@ -24,6 +26,9 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/login">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/exchangeToken">ExchangeToken</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/logout">Logout</a>
@@ -50,6 +55,18 @@
                   <tr>
                     <th scope="row">session</th>
                     <td>{{.SessionState}}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">access token</th>
+                    <td style="word-break: break-all;">{{.AccessToken}}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">refresh token</th>
+                    <td style="word-break: break-all;">{{.RefreshToken}}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">token scope</th>
+                    <td style="word-break: break-all;">{{.Scope}}</td>
                   </tr>
                 </tbody>
               </table>

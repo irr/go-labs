@@ -1,26 +1,37 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
+	"reflect"
+	"runtime"
+	"strings"
+
+	"learn.oauth.client/model"
 )
 
 var config = struct {
 	appID            string
+	appSecret        string
 	homeURL          string
 	authURL          string
 	authCodeCallback string
+	tokenEndpoint    string
 	logoutURL        string
 	afterLogoutURL   string
 }{
 	appID:            "billingApp",
+	appSecret:        "ff6952f2-7214-468f-ad1d-e45947b75b57",
 	homeURL:          "http://localhost:8000",
 	authURL:          "http://localhost:8080/auth/realms/learningApp/protocol/openid-connect/auth",
 	authCodeCallback: "http://localhost:8000/authCodeRedirect",
 	logoutURL:        "http://localhost:8080/auth/realms/learningApp/protocol/openid-connect/logout",
+	tokenEndpoint:    "http://localhost:8080/auth/realms/learningApp/protocol/openid-connect/token",
 	afterLogoutURL:   "http://localhost:8000",
 }
 
@@ -29,6 +40,9 @@ var t = template.Must(template.ParseFiles("template/index.html"))
 type AppVar struct {
 	AuthCode     string
 	SessionState string
+	AccessToken  string
+	RefreshToken string
+	Scope        string
 }
 
 var appVar = AppVar{}
@@ -77,10 +91,64 @@ func authCodeRedirect(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, nil)
 }
 
+func exchangeToken(w http.ResponseWriter, r *http.Request) {
+	qs := url.Values{}
+	qs.Add("client_id", config.appID)
+	qs.Add("grant_type", "authorization_code")
+	qs.Add("code", appVar.AuthCode)
+	qs.Add("redirect_uri", config.authCodeCallback)
+
+	req, err := http.NewRequest("POST", config.tokenEndpoint, strings.NewReader(qs.Encode()))
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.SetBasicAuth(config.appID, config.appSecret)
+
+	if err != nil {
+		log.Print(err)
+	}
+
+	c := http.Client{}
+	res, err := c.Do(req)
+	if err != nil {
+		log.Print("couldn't get access token", err)
+		return
+	}
+
+	byteBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer res.Body.Close()
+
+	accessTokenResponse := model.AccessTokenResponse{}
+	json.Unmarshal(byteBody, &accessTokenResponse)
+
+	appVar.AccessToken = accessTokenResponse.AccessToken
+	appVar.RefreshToken = accessTokenResponse.RefreshToken
+	appVar.Scope = accessTokenResponse.Scope
+
+	log.Println("token", appVar.AccessToken)
+
+	t.Execute(w, appVar)
+}
+
+func enabledLog(handler func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		handlerName := runtime.FuncForPC(reflect.ValueOf(handler).Pointer()).Name()
+		log.SetPrefix(handlerName + " ")
+		log.Printf("--> %s\n", handlerName)
+		log.Printf("request: %+v\n", r.RequestURI)
+		log.Printf("response: %+v\n", w)
+		handler(w, r)
+		log.Printf("<-- %s\n\n", handlerName)
+	}
+}
+
 func main() {
-	http.HandleFunc("/", home)
-	http.HandleFunc("/login", login)
-	http.HandleFunc("/logout", logout)
-	http.HandleFunc("/authCodeRedirect", authCodeRedirect)
+	http.HandleFunc("/", enabledLog(home))
+	http.HandleFunc("/login", enabledLog(login))
+	http.HandleFunc("/logout", enabledLog(logout))
+	http.HandleFunc("/exchangeToken", enabledLog(exchangeToken))
+	http.HandleFunc("/authCodeRedirect", enabledLog(authCodeRedirect))
 	http.ListenAndServe(":8000", nil)
 }
