@@ -31,6 +31,9 @@
               <a class="nav-link" href="/exchangeToken">ExchangeToken</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="/services">services</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="/logout">Logout</a>
             </li>
           </ul>
@@ -40,6 +43,7 @@
       <main role="main" class="container">
 
         <div style="padding: 5rem 1.5rem; text-align: center;">
+          {{block "services" .Services}}{{end}}
             <table class="table table-hover">
                 <thead>
                   <tr>
