@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"learn.oauth.client/model"
 )
 
@@ -36,7 +37,7 @@ var config = struct {
 	logoutURL:        "http://localhost:8080/auth/realms/learningApp/protocol/openid-connect/logout",
 	tokenEndpoint:    "http://localhost:8080/auth/realms/learningApp/protocol/openid-connect/token",
 	servicesEndpoint: "http://localhost:8001/billing/v1/services",
-	afterLogoutURL:   "http://localhost:8000",
+	afterLogoutURL:   "http://localhost:8000/home",
 }
 
 var t = template.Must(template.ParseFiles("template/index.html"))
@@ -49,9 +50,14 @@ type AppVar struct {
 	RefreshToken string
 	Scope        string
 	Services     []string
+	State        map[string]struct{}
 }
 
-var appVar = AppVar{}
+func newAppVar() AppVar {
+	return AppVar{State: make(map[string]struct{})}
+}
+
+var appVar = newAppVar()
 
 func home(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, appVar)
@@ -64,10 +70,13 @@ func login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	state := uuid.New().String()
+	appVar.State[state] = struct{}{}
+
 	qs := url.Values{}
 	qs.Add("client_id", config.appID)
 	qs.Add("response_type", "code")
-	qs.Add("state", "123")
+	qs.Add("state", state)
 	qs.Add("redirect_uri", config.authCodeCallback)
 
 	req.URL.RawQuery = qs.Encode()
@@ -83,22 +92,31 @@ func logout(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 	logoutURL.RawQuery = qs.Encode()
-	appVar = AppVar{}
+	appVar = newAppVar()
 
 	http.Redirect(w, r, logoutURL.String(), http.StatusFound)
 }
 
 func authCodeRedirect(w http.ResponseWriter, r *http.Request) {
 	appVar.AuthCode = r.URL.Query().Get("code")
+
+	callBackState := r.URL.Query().Get("state")
+	if _, ok := appVar.State[callBackState]; !ok {
+		fmt.Fprintf(w, "Error")
+		return
+	}
+	delete(appVar.State, callBackState)
+
 	appVar.SessionState = r.URL.Query().Get("session_state")
 	fmt.Printf("Request queries : %+v\n", appVar)
 
 	r.URL.RawQuery = ""
-	http.Redirect(w, r, config.homeURL, http.StatusFound)
-	t.Execute(w, nil)
+	exchangeToken()
+
+	t.Execute(w, appVar)
 }
 
-func exchangeToken(w http.ResponseWriter, r *http.Request) {
+func exchangeToken() {
 	qs := url.Values{}
 	qs.Add("client_id", config.appID)
 	qs.Add("grant_type", "authorization_code")
@@ -134,8 +152,6 @@ func exchangeToken(w http.ResponseWriter, r *http.Request) {
 	appVar.Scope = accessTokenResponse.Scope
 
 	log.Println("token", appVar.AccessToken)
-
-	t.Execute(w, appVar)
 }
 
 func enabledLog(handler func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
@@ -151,10 +167,9 @@ func enabledLog(handler func(w http.ResponseWriter, r *http.Request)) func(w htt
 }
 
 func main() {
-	http.HandleFunc("/", enabledLog(home))
+	http.HandleFunc("/home", enabledLog(home))
 	http.HandleFunc("/login", enabledLog(login))
 	http.HandleFunc("/logout", enabledLog(logout))
-	http.HandleFunc("/exchangeToken", enabledLog(exchangeToken))
 	http.HandleFunc("/services", enabledLog(services))
 	http.HandleFunc("/authCodeRedirect", enabledLog(authCodeRedirect))
 	http.ListenAndServe(":8000", nil)
@@ -188,6 +203,10 @@ func services(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer res.Body.Close()
+
+	if res.StatusCode != 200 {
+		log.Println(string(byteBody))
+	}
 
 	billingResponse := &model.BillingResponse{}
 	err = json.Unmarshal(byteBody, billingResponse)

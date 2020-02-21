@@ -387,13 +387,6 @@
       ]
     },
     {
-      "clientScope": "admin",
-      "roles": [
-        "admin",
-        "user"
-      ]
-    },
-    {
       "clientScope": "offline_access",
       "roles": [
         "offline_access"
@@ -530,6 +523,7 @@
       "defaultClientScopes": [
         "web-origins",
         "role_list",
+        "getBillingService",
         "profile",
         "roles",
         "email"
@@ -852,15 +846,6 @@
       ]
     },
     {
-      "id": "21a78735-7012-424a-a222-1bdc56be54ab",
-      "name": "admin",
-      "protocol": "openid-connect",
-      "attributes": {
-        "include.in.token.scope": "true",
-        "display.on.consent.screen": "true"
-      }
-    },
-    {
       "id": "d810a29e-8da9-4986-a21a-8fdf964afc1e",
       "name": "email",
       "description": "OpenID Connect built-in scope: email",
@@ -902,6 +887,15 @@
           }
         }
       ]
+    },
+    {
+      "id": "581035cd-02d5-40ac-8df2-c47f3a9dd89e",
+      "name": "getBillingService",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true"
+      }
     },
     {
       "id": "d131dcb5-e992-46a6-8fbc-a0b70268e431",

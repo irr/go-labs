@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -10,6 +11,8 @@ import (
 	"reflect"
 	"runtime"
 	"strings"
+
+	"learn.oauth.billing/model"
 )
 
 type Billing struct {
@@ -46,23 +49,43 @@ func services(w http.ResponseWriter, r *http.Request) {
 	token, err := getToken(r)
 	if err != nil {
 		log.Println(err)
-		s := BillingError{Error: err.Error()}
-		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		encoder := json.NewEncoder(w)
-		encoder.Encode(s)
+		makeErrorMessage(w, err.Error())
 		return
 	}
 	log.Println("Token:", token)
 
 	if !validateToken(token) {
-		s := BillingError{Error: "InvalidToken"}
-		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		encoder := json.NewEncoder(w)
-		encoder.Encode(s)
+		makeErrorMessage(w, "InvalidToken")
 		return
 	}
+
+	claimBytes, err := getClaim(token)
+	if err != nil {
+		log.Println(err)
+		makeErrorMessage(w, "Cannot parse token claim")
+		return
+	}
+	tokenClaim := model.Tokenclaim{}
+	err = json.Unmarshal(claimBytes, &tokenClaim)
+	if err != nil {
+		log.Println(err)
+		makeErrorMessage(w, err.Error())
+		return
+	}
+
+	/*
+		scopes := strings.Split(tokenClaim.Scope, " ")
+		for _, v := range scopes {
+			log.Println("Scope:", v)
+		}
+	*/
+
+	if !strings.Contains(tokenClaim.Scope, "getBillingService") {
+		makeErrorMessage(w, "Invalid token scope. Required scope [getBillingService]")
+		return
+	}
+
+	log.Println("Scope:", tokenClaim.Scope)
 
 	s := Billing{
 		Services: []string{
@@ -75,6 +98,15 @@ func services(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	encoder := json.NewEncoder(w)
 	encoder.Encode(s)
+}
+
+func getClaim(token string) ([]byte, error) {
+	tokenParts := strings.Split(token, ".")
+	claim, err := base64.RawURLEncoding.DecodeString(tokenParts[1])
+	if err != nil {
+		return []byte{}, err
+	}
+	return claim, nil
 }
 
 func enabledLog(handler func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
@@ -159,4 +191,12 @@ func validateToken(token string) bool {
 	}
 
 	return introSpect.Active
+}
+
+func makeErrorMessage(w http.ResponseWriter, errMsg string) {
+	s := BillingError{Error: errMsg}
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusBadRequest)
+	encoder := json.NewEncoder(w)
+	encoder.Encode(s)
 }
