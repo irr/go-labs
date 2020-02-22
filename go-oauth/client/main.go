@@ -171,6 +171,7 @@ func main() {
 	http.HandleFunc("/login", enabledLog(login))
 	http.HandleFunc("/logout", enabledLog(logout))
 	http.HandleFunc("/services", enabledLog(services))
+	http.HandleFunc("/refreshToken", enabledLog(refreshToken))
 	http.HandleFunc("/authCodeRedirect", enabledLog(authCodeRedirect))
 	http.ListenAndServe(":8000", nil)
 }
@@ -206,6 +207,9 @@ func services(w http.ResponseWriter, r *http.Request) {
 
 	if res.StatusCode != 200 {
 		log.Println(string(byteBody))
+		appVar.Services = []string{string(byteBody)}
+		tServices.Execute(w, appVar)
+		return
 	}
 
 	billingResponse := &model.BillingResponse{}
@@ -217,6 +221,43 @@ func services(w http.ResponseWriter, r *http.Request) {
 	}
 
 	appVar.Services = billingResponse.Services
+	tServices.Execute(w, appVar)
+}
+
+func refreshToken(w http.ResponseWriter, r *http.Request) {
+
+	qs := url.Values{}
+	qs.Add("grant_type", "refresh_token")
+	qs.Add("refresh_token", appVar.RefreshToken)
+
+	req, err := http.NewRequest("POST", config.tokenEndpoint, strings.NewReader(qs.Encode()))
+	if err != nil {
+		log.Print(err)
+	}
+
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.SetBasicAuth(config.appID, config.appSecret)
+
+	c := http.Client{}
+	res, err := c.Do(req)
+	if err != nil {
+		log.Print("couldn't get access token", err)
+		tServices.Execute(w, appVar)
+		return
+	}
+
+	byteBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer res.Body.Close()
+
+	accessTokenResponse := model.AccessTokenResponse{}
+	json.Unmarshal(byteBody, &accessTokenResponse)
+
+	appVar.AccessToken = accessTokenResponse.AccessToken
+	appVar.RefreshToken = accessTokenResponse.RefreshToken
 
 	tServices.Execute(w, appVar)
 }
