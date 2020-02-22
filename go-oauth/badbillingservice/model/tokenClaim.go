@@ -37,23 +37,3 @@ type Tokenclaim struct {
 	FamilyName        string         `json:"family_name"`
 	Email             string         `json:"email"`
 }
-
-func (t *Tokenclaim) AudAsSlice() []string {
-	switch t.Aud.(type) {
-	case string:
-		return []string{t.Aud.(string)}
-	case []interface{}:
-		auds, ok := t.Aud.([]interface{})
-		if !ok {
-			return []string{}
-		}
-		result := []string{}
-		for _, aud := range auds {
-			if sAud, ok := aud.(string); ok {
-				result = append(result, sAud)
-			}
-			return result
-		}
-	}
-	return []string{}
-}

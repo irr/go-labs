@@ -77,6 +77,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 	qs.Add("client_id", config.appID)
 	qs.Add("response_type", "code")
 	qs.Add("state", state)
+	qs.Add("scope", "billingService")
 	qs.Add("redirect_uri", config.authCodeCallback)
 
 	req.URL.RawQuery = qs.Encode()
