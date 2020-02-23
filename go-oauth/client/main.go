@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -63,6 +65,14 @@ func home(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, appVar)
 }
 
+var codeVerifier = "code-challenge43128unreserved-._~nge43128dX"
+
+func makeCodeChallenge(plain string) string {
+	h := sha256.Sum256([]byte(plain))
+	hs := base64.RawURLEncoding.EncodeToString(h[:])
+	return hs
+}
+
 func login(w http.ResponseWriter, r *http.Request) {
 	req, err := http.NewRequest("GET", config.authURL, nil)
 	if err != nil {
@@ -79,6 +89,9 @@ func login(w http.ResponseWriter, r *http.Request) {
 	qs.Add("state", state)
 	qs.Add("scope", "openid billingService")
 	qs.Add("redirect_uri", config.authCodeCallback)
+	codeChallenge := makeCodeChallenge(codeVerifier)
+	qs.Add("code_challenge", codeChallenge)
+	qs.Add("code_challenge_method", "S256")
 
 	req.URL.RawQuery = qs.Encode()
 	http.Redirect(w, r, req.URL.String(), http.StatusFound)
@@ -123,6 +136,7 @@ func exchangeToken() {
 	qs.Add("grant_type", "authorization_code")
 	qs.Add("code", appVar.AuthCode)
 	qs.Add("redirect_uri", config.authCodeCallback)
+	qs.Add("code_verifier", codeVerifier)
 
 	req, err := http.NewRequest("POST", config.tokenEndpoint, strings.NewReader(qs.Encode()))
 	if err != nil {
