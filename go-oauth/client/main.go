@@ -89,6 +89,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 	qs.Add("state", state)
 	qs.Add("scope", "openid billingService")
 	qs.Add("redirect_uri", config.authCodeCallback)
+
 	codeChallenge := makeCodeChallenge(codeVerifier)
 	qs.Add("code_challenge", codeChallenge)
 	qs.Add("code_challenge_method", "S256")
