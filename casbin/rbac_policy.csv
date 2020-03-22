@@ -1,0 +1,20 @@
+# route validation
+p, nobody, /billing/gym/:gid/report/:rid, validate
+p, nobody, /payout/gym/:gid/report/:rid, validate
+p, nobody, /profile, validate
+
+# user permissions
+p, bob, /payout/gym/bob-gym1/report/bob-report-gym1, (payout.view_report)
+p, bob, /billing/gym/bob-gym2/report/bob-report-gym2, (billing.view_report)|(billing.edit_report)
+
+p, alice, /billing/gym/bob-gym2/report/bob-report-gym2, (billing.view_report)
+
+# role permissions
+p, role:users, /profile, (profile.view)|(profile.edit)
+
+# user roles
+g, alice, role:users
+g, bob, role:manager
+
+# role hierarchy
+g, role:manager, role:users
