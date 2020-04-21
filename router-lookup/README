@@ -1,0 +1,44 @@
+$ go build -o ./rl main.go
+
+$ ./rl -cpuprofile=rl.prof
+ u:/other/01E6E2FVX6D1VDFZRVMJ2GJVHQ/endpoint/100
+ h: 0x656220
+ p: [{Key:id Value:01E6E2FVX6D1VDFZRVMJ2GJVHQ} {Key:nid Value:100}]
+ok: false
+id: 01E6E2FVX6D1VDFZRVMJ2GJVHQ and nid: 100
+
+ u:/other/01E6E2FVX6D1VDFZRVMJGG5SPA/endpoint/100
+ h: 0x656220
+ p: [{Key:id Value:01E6E2FVX6D1VDFZRVMJGG5SPA} {Key:nid Value:100}]
+ok: false
+id: 01E6E2FVX6D1VDFZRVMJGG5SPA and nid: 100
+
+ u:/other/01E6E2FVX7AYGETF031YY85B1J/endpoint/100
+ h: 0x656220
+ p: [{Key:id Value:01E6E2FVX7AYGETF031YY85B1J} {Key:nid Value:100}]
+ok: false
+id: 01E6E2FVX7AYGETF031YY85B1J and nid: 100
+...
+
+$ go tool pprof rl rl.prof
+File: rl
+Type: cpu
+Time: Apr 21, 2020 at 10:51am (WEST)
+Duration: 301.47ms, Total samples = 130ms (43.12%)
+Entering interactive mode (type "help" for commands, "o" for options)
+(pprof) top10
+Showing nodes accounting for 120ms, 92.31% of 130ms total
+Showing top 10 nodes out of 50
+      flat  flat%   sum%        cum   cum%
+      20ms 15.38% 15.38%       20ms 15.38%  runtime.mallocgc
+      20ms 15.38% 30.77%       20ms 15.38%  syscall.Syscall
+      10ms  7.69% 38.46%       20ms 15.38%  fmt.(*pp).printValue
+      10ms  7.69% 46.15%       20ms 15.38%  net/http.DetectContentType
+      10ms  7.69% 53.85%       10ms  7.69%  net/http.textSig.match
+      10ms  7.69% 61.54%       30ms 23.08%  os.(*File).write
+      10ms  7.69% 69.23%       10ms  7.69%  runtime.futex
+      10ms  7.69% 76.92%       10ms  7.69%  runtime.mapassign_faststr
+      10ms  7.69% 84.62%       20ms 15.38%  runtime.newobject
+      10ms  7.69% 92.31%       10ms  7.69%  runtime.sysUnused
+(pprof) web
+...
