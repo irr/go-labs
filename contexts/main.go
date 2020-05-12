@@ -88,7 +88,7 @@ func response(ctx context.Context, wg *sync.WaitGroup, cancel context.CancelFunc
 			log.Printf("response: ctx.Done() called!\n")
 			return
 		}
-		log.Printf("waiting...\n")
+		log.Printf("  select: looping...\n")
 		if c == 2 {
 			log.Printf("response: all done!\n")
 		}
