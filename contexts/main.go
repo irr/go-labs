@@ -27,39 +27,46 @@ func WaitServer(w http.ResponseWriter, r *http.Request) {
 
 func server() {
 	http.HandleFunc("/", WaitServer)
-	log.Printf("server listening on :%d...\n", PORT)
+	log.Printf("  server: server listening on :%d...\n", PORT)
 	http.ListenAndServe(fmt.Sprintf(":%d", PORT), nil)
 }
 
-func request(c chan int, l string, t int) {
+func request(ctx context.Context, c chan int, l string, t int) {
 	go func() {
 		client := resty.New()
+		log.Printf(" request: %s sent with t:%d\n", l, t)
 		resp, err := client.R().
 			SetQueryParams(map[string]string{
 				"secs": fmt.Sprintf("%d", t),
 			}).
-			EnableTrace().
 			Get(fmt.Sprintf("http://localhost:%d", PORT))
+
 		if err != nil {
-			log.Printf("%s error [%v]\n", l, err)
+			log.Printf(" request: %s error [%v]\n", l, err)
 			c <- 0
 			return
 		}
-		log.Printf("%s got %v\n", l, resp.Status())
-		c <- 1
+		err = ctx.Err()
+		deadline, ok := ctx.Deadline()
+		log.Printf(" request: %s got %v [%v,%v:%v]\n", l, resp.Status(), deadline, ok, err)
+		if err == nil {
+			c <- 1
+		}
 	}()
 }
 
 func response(ctx context.Context, cancel context.CancelFunc, c1 chan int, c2 chan int) {
+	defer func() {
+		log.Printf("response: exited.\n")
+	}()
 	for {
 		select {
 		case r1 := <-c1:
-			log.Printf("r1 got %v\n", r1)
-			//cancel()
+			log.Printf("response: r1 got %v\n", r1)
 		case r2 := <-c2:
-			log.Printf("r2 got %v\n", r2)
+			log.Printf("response: r2 got %v\n", r2)
 		case <-ctx.Done():
-			log.Printf("ctx.Done() called!\n")
+			log.Printf("response: ctx.Done() called!\n")
 			return
 		}
 	}
@@ -67,20 +74,19 @@ func response(ctx context.Context, cancel context.CancelFunc, c1 chan int, c2 ch
 
 func main() {
 	max := 5
-	timeout := 2
+	timeout := 3
 
 	go server()
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
 
 	c1 := make(chan int)
-	request(c1, "c1", 1)
+	go request(ctx, c1, "c1", 2)
 
 	c2 := make(chan int)
-	request(c2, "c2", 3)
+	go request(ctx, c2, "c2", 4)
 
 	go response(ctx, cancel, c1, c2)
 
 	time.Sleep(time.Duration(max) * time.Second)
-	log.Println("server exited.")
 }
