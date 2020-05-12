@@ -39,6 +39,7 @@ func request(ctx context.Context, c chan int, l string, t int) {
 			SetQueryParams(map[string]string{
 				"secs": fmt.Sprintf("%d", t),
 			}).
+			SetContext(ctx).
 			Get(fmt.Sprintf("http://localhost:%d", PORT))
 
 		if err != nil {
@@ -73,8 +74,9 @@ func response(ctx context.Context, cancel context.CancelFunc, c1 chan int, c2 ch
 }
 
 func main() {
-	max := 5
-	timeout := 3
+	max, timeout := 5, 3
+
+	log.Printf("    main: started.\n")
 
 	go server()
 
@@ -89,4 +91,6 @@ func main() {
 	go response(ctx, cancel, c1, c2)
 
 	time.Sleep(time.Duration(max) * time.Second)
+
+	log.Printf("    main: exited.\n")
 }
