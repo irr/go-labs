@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	maxMessages                  = 1
+	maxMessages                  = 10
 	visibilityTimeout            = 30
 	waitTimeSeconds              = 20
 	visibilityTimeoutAfterFailed = 0
