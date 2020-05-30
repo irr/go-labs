@@ -189,5 +189,14 @@ func main() {
 	wg.Add(1)
 	go consumeMessages(ctx, cancel, &wg, svc, chn)
 
+	/*
+		timer := time.AfterFunc(cancelTimeout*time.Second, func() {
+			log.Println("execution cancelled")
+			chn <- &payloadMessage{payloadType: 1}
+		})
+
+		defer timer.Stop()
+	*/
+
 	wg.Wait()
 }
