@@ -8,11 +8,14 @@ import (
 
 // Consumer ...
 type Consumer struct {
+	T string
 	E engines.Engine
+	F func()
 }
 
 // Run ...
 func (c Consumer) Run() error {
+	fmt.Printf("starting topic: %s\n", c.T)
 	for {
 		msg, err := c.E.GetMessage()
 		if err != nil {
@@ -24,6 +27,9 @@ func (c Consumer) Run() error {
 		}
 		c.E.Validate(&msg)
 
+		c.F()
+
+		// Restart
 		fmt.Println("waiting...")
 		time.Sleep(2 * time.Second)
 	}
