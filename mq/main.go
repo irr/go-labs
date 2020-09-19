@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -19,7 +20,10 @@ import (
 	uuid "github.com/gofrs/uuid"
 )
 
+const messages = 1000
+
 var ops uint64
+var wg sync.WaitGroup
 
 func getID() *string {
 	u4, err := uuid.NewV4()
@@ -35,6 +39,8 @@ func main() {
 	queueURL := "https://sqs.us-east-1.amazonaws.com/.../mq.fifo"
 
 	h := mq.HandlerFunc(func(m *mq.Message) error {
+		defer wg.Done()
+
 		fmt.Printf("Received message: %s\n", aws.StringValue(m.SQSMessage.Body))
 
 		atomic.AddUint64(&ops, 1)
@@ -76,19 +82,25 @@ func main() {
 	p.Start()
 	defer p.Shutdown(ctx)
 
+	wg.Add(1)
+
 	go func() {
-		for i := 1000; i <= 1500; i++ {
+		defer wg.Done()
+		max := 1000 + messages
+		for i := 1001; i <= max; i++ {
+			idx := i - 1000
+			wg.Add(1)
 			// Publish messages (will be batched).
 			p.Publish(&sqs.SendMessageBatchRequestEntry{
 				Id:             getID(),
 				MessageGroupId: aws.String("Hello"),
-				MessageBody:    aws.String(fmt.Sprintf("%v=>Hello-Message-%s", i, *getID())),
+				MessageBody:    aws.String(fmt.Sprintf("%v=>Hello-Message-%s", idx, *getID())),
 			})
-			log.Printf("published message %v\n", i)
+			log.Printf("published message %v\n", idx)
 		}
 	}()
 
-	time.Sleep(time.Duration(60 * time.Second))
+	wg.Wait()
 
 	fmt.Println("ops:", ops)
 }
