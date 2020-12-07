@@ -16,6 +16,9 @@ sudo apt install protobuf-compiler
 go get -u github.com/golang/protobuf/protoc-gen-go
 
 go install github.com/fullstorydev/grpcurl/cmd/grpcurl
+
+> to create book.pb.go
+protoc --go_out=plugins=grpc:book book.proto
 */
 
 func main() {
