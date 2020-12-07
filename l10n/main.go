@@ -115,6 +115,7 @@ func main() {
 	p = message.NewPrinter(language.BrazilianPortuguese)
 	p.Printf("BRA: %d", currency.Symbol(currency.USD.Amount(0.1)))
 	fmt.Println()
+
 	p.Printf("BRA: %d", currency.NarrowSymbol(currency.JPY.Amount(1.6)))
 	fmt.Println()
 	p.Printf("BRA: %d", currency.ISO.Kind(currency.Cash)(currency.EUR.Amount(12.255)))
